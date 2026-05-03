@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengumuman Kelulusan - SMK MUHAMMADIYAH 1 SEPUTIH BANYAK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ================= KUSTOMISASI VARIABEL WARNA ================= */
+        :root {
+            --navy: #0a192f;
+            --gold: #d4af37;
+            --white: #ffffff;
+            --bg-body: #f4f7f6;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --lulus-bg: #ffffff;
+            --lulus-text: #155724;
+            --lulus-accent: #28a745;
+            --gagal-bg: #ffffff;
+            --gagal-text: #721c24;
+            --gagal-accent: #dc3545;
+        }
+
+        /* ================= CSS DASAR ================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-body); color: var(--text-dark); line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        
+        h1, h2, h3 { color: var(--navy); font-weight: 600; }
+        p { color: var(--text-light); }
+        .text-center { text-align: center; }
+        .text-gold { color: var(--gold); }
+
+        /* Card & Layouts */
+        .card { background: var(--white); border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); padding: 30px; margin-bottom: 25px; transition: transform 0.3s ease; border-top: 4px solid var(--navy); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        
+        /* Header */
+        .header-section { text-align: center; padding: 30px 0 20px; }
+        .header-svg { width: 80px; height: 80px; fill: var(--gold); margin-bottom: 15px; }
+        .school-title { font-size: 24px; text-transform: uppercase; margin-bottom: 5px; }
+        .school-year { font-size: 16px; font-weight: 500; color: var(--gold); margin-bottom: 20px; }
+
+        /* Timer Styles */
+        .timer-container { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
+        .timer-box { background: var(--navy); color: var(--white); padding: 15px; border-radius: 10px; min-width: 80px; text-align: center; box-shadow: 0 4px 10px rgba(10, 25, 47, 0.2); border-bottom: 3px solid var(--gold); }
+        .timer-value { font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 5px; }
+        .timer-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #ccc; }
+
+        /* Buttons */
+        .btn { display: inline-block; padding: 12px 25px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; font-family: 'Poppins', sans-serif; text-align: center; }
+        .btn-primary { background: var(--navy); color: var(--white); border: 2px solid var(--navy); }
+        .btn-primary:hover:not(:disabled) { background: transparent; color: var(--navy); }
+        .btn-gold { background: var(--gold); color: var(--white); }
+        .btn-gold:hover { background: #b8962c; }
+        .btn-outline { background: transparent; border: 2px solid var(--navy); color: var(--navy); }
+        .btn-outline:hover { background: var(--navy); color: var(--white); }
+        .btn:disabled { background: #cccccc; border-color: #cccccc; color: #666666; cursor: not-allowed; }
+        .btn-block { display: block; width: 100%; margin-top: 15px; }
+
+        /* SPA Pages */
+        .page { display: none; animation: fadeIn 0.5s ease forwards; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Jurusan Cards */
+        .jurusan-card { text-align: center; padding: 20px; border: 1px solid #eee; border-radius: 8px; }
+        .jurusan-icon { font-size: 40px; margin-bottom: 10px; }
+
+        /* Form */
+        .form-control { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; font-family: 'Poppins', sans-serif; outline: none; transition: border-color 0.3s; }
+        .form-control:focus { border-color: var(--navy); }
+
+        /* ================= MODAL POPUP STYLES ================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 25, 47, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: var(--white);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 15px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transform: scale(0.7);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-content { transform: scale(1); opacity: 1; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 24px;
+            margin: 15px 0;
+            letter-spacing: 1px;
+        }
+        .badge-lulus { background: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
+        .badge-gagal { background: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
+        .badge-error { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
+
+        .student-info-table {
+            width: 100%;
+            margin: 20px 0;
+            text-align: left;
+            border-collapse: collapse;
+        }
+        .student-info-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        .student-info-table td:first-child { font-weight: 600; color: var(--navy); width: 40%; }
+
+        /* Footer */
+        footer { text-align: center; padding: 20px 0; margin-top: 40px; border-top: 1px solid #ddd; font-size: 14px; }
+
+        /* Print Media Query */
+        @media print {
+            body { background: white; color: black; }
+            .no-print, .modal-overlay, footer, .btn, .header-section, .card, .timer-container { display: none !important; }
+            .print-area { display: block !important; }
+            .modal-content { 
+                position: static; box-shadow: none; transform: none; opacity: 1; width: 100%; max-width: 100%; padding: 0; border: none;
+            }
+        }
+
+        .print-area { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- HALAMAN 1: BERANDA -->
+    <div id="page-beranda" class="page active">
+        <div class="header-section">
+            <svg class="header-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"/>
+            </svg>
+            <h1 class="school-title">Pengumuman Kelulusan</h1>
+            <h2 class="school-year">SMK MUHAMMADIYAH 1 SEPUTIH BANYAK<br>Tahun Ajaran 2026/2027</h2>
+        </div>
+
+        <div class="card grid-2">
+            <div>
+                <h3>Tentang Sekolah</h3>
+                <p><strong>Alamat:</strong> Seputih Banyak, Lampung Tengah</p>
+                <p><strong>Website:</strong> www.smkmuh1seputihbanyak.sch.id</p>
+            </div>
+            <div>
+                <h3>Informasi</h3>
+                <p><strong>Tanggal:</strong> 5 may 2026, 16:00 WIB</p>
+                <p><strong>Metode:</strong> Input NISN Online</p>
+            </div>
+        </div>
+
+        <div class="card text-center" style="border-top-color: var(--gold);">
+            <h3>Waktu Menuju Pengumuman</h3>
+            <div class="timer-container">
+                <div class="timer-box"><div class="timer-value" id="t-hari">00</div><div class="timer-label">Hari</div></div>
+                <div class="timer-box"><div class="timer-value" id="t-jam">00</div><div class="timer-label">Jam</div></div>
+                <div class="timer-box"><div class="timer-value" id="t-menit">00</div><div class="timer-label">Menit</div></div>
+                <div class="timer-box"><div class="timer-value" id="t-detik">00</div><div class="timer-label">Detik</div></div>
+            </div>
+            <button id="btn-masuk" class="btn btn-primary btn-block" disabled onclick="navigasi('page-sambutan')">
+                PENGUMUMAN BELUM DIBUKA
+            </button>
+        </div>
+    </div>
+
+    <!-- HALAMAN 2: SAMBUTAN -->
+    <div id="page-sambutan" class="page">
+        <div class="card" style="margin-top: 40px;">
+            <h2 class="text-center text-gold" style="margin-bottom: 20px;">Sambutan Kepala Sekolah</h2>
+            <p>Assalamu'alaikum Warahmatullahi Wabarakatuh.</p>
+            <p style="margin-top: 10px;">Berdasarkan hasil rapat pleno kelulusan dewan guru SMK Muhammadiyah 1 Seputih Banyak, hari ini merupakan momen penentuan hasil belajar kalian selama tiga tahun.</p>
+            <p style="margin-top: 10px;">Gunakan hasil ini dengan bijak untuk masa depan kalian yang lebih gemilang.</p>
+            
+            <div class="ttd-box" style="text-align: right; margin-top: 30px;">
+                <p>Seputih Banyak, 5 Mei 2026</p>
+                <p>Kepala Sekolah,</p>
+                <br><br>
+                <p><strong><u>AMIN SETIYADI, M.E., Gr.</u></strong></p>
+                <p>NIB. 1649256</p>
+            </div>
+
+            <div class="grid-2" style="margin-top: 30px;">
+                <button class="btn btn-outline" onclick="navigasi('page-beranda')">Beranda</button>
+                <button class="btn btn-primary" onclick="navigasi('page-cek')">Cek Kelulusan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HALAMAN 3: FORM CEK -->
+    <div id="page-cek" class="page">
+        <div class="card" style="margin-top: 40px;">
+            <h2 class="text-center" style="margin-bottom: 25px;">Masukkan NISN Anda</h2>
+            <div style="margin-bottom: 20px;">
+                <input type="text" id="input-nisn" class="form-control" placeholder="Contoh: 0011223344" autocomplete="off">
+            </div>
+            <button class="btn btn-primary btn-block" onclick="cekKelulusan()">LIHAT HASIL</button>
+            <button class="btn btn-outline btn-block" onclick="navigasi('page-sambutan')" style="margin-top: 10px;">Kembali</button>
+        </div>
+    </div>
+
+    <footer class="no-print">
+        &copy; <span id="currentYear"></span> SMK MUHAMMADIYAH 1 SEPUTIH BANYAK
+    </footer>
+</div>
+
+<!-- ================= MODAL POPUP HASIL ================= -->
+<div id="modal-result" class="modal-overlay">
+    <div class="modal-content">
+        <h3 id="modal-title" style="margin-bottom: 5px;">Hasil Kelulusan</h3>
+        <p style="font-size: 13px; font-style: italic; color: var(--text-light); margin-bottom: 15px;">
+            Berdasarkan hasil rapat pleno kelulusan, siswa dengan data berikut:
+        </p>
+        
+        <table class="student-info-table">
+            <tr><td>Nama Lengkap</td><td id="res-nama">-</td></tr>
+            <tr><td>NISN</td><td id="res-nisn">-</td></tr>
+            <tr><td>Jurusan</td><td id="res-jurusan">-</td></tr>
+        </table>
+
+        <p style="margin-top: 10px;">Dinyatakan:</p>
+        <div id="res-status-badge" class="status-badge">MEMUAT...</div>
+        
+        <p id="res-message" style="margin: 15px 0; font-size: 14px;"></p>
+
+        <div id="modal-actions" style="margin-top: 25px; display: flex; gap: 10px; flex-direction: column;">
+            <!-- Dinamis -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // DATABASE CSV
+    const dataCSV = `Nama,NISN,Jurusan,Status
+ADINATA PURWANTO,0079341534,Manajemen Perkantoran,LULUS
+AGUS KINARO SURYANTO PUTRO,0086313802,Manajemen Perkantoran,LULUS
+CITRA FAJARIA DUWI NOVA,0062567814,Manajemen Perkantoran,LULUS
+DIAZ PUTRA RAMDANI,0085388876,Manajemen Perkantoran,LULUS
+ELSA UNZILA LARASATI HADI,0083282497,Manajemen Perkantoran,LULUS
+FIKA ZULIA PRATIWI,0076059107,Manajemen Perkantoran,LULUS
+IPNU SUBANDONO,0083711818,Manajemen Perkantoran,LULUS
+KHAFI LUDIN,0046991480,Manajemen Perkantoran,LULUS
+LENY MUSFANIA,0076212377,Manajemen Perkantoran,LULUS
+M.QIFTAN ABDILAH,0075486804,Manajemen Perkantoran,LULUS
+MEI SILLA PUTRI,0084051793,Manajemen Perkantoran,LULUS
+NOVA INDAH NAKITA,0088074324,Manajemen Perkantoran,LULUS
+RAFA ALFINZA,0078450141,Manajemen Perkantoran,LULUS
+RINA OCKTAVIA,0085006289,Manajemen Perkantoran,LULUS
+SITI SUMIATI,0063607122,Manajemen Perkantoran,LULUS
+TIARA NUR OKTAVIA,0073759369,Manajemen Perkantoran,LULUS
+VARDHAN PAMUNGKAS,0084463864,Manajemen Perkantoran,LULUS
+AJENG RAHMADANI,0073558410,PEMASARAN,LULUS
+ALFAN,0078730662,PEMASARAN,LULUS
+ANDI PRAYOGA,0062438189,PEMASARAN,LULUS
+ANISA DIVA AULIA PUTRI,0073101366,PEMASARAN,LULUS
+APRILIA NABILA S.,0085070944,PEMASARAN,LULUS
+AULIA YUNDA SARI,0075625467,PEMASARAN,LULUS
+BELLA ANGGUN PURMILASARI,0083489486,PEMASARAN,LULUS
+DESTI AMANDA,0077693599,PEMASARAN,LULUS
+EKA APRILLIYA,0081595895,PEMASARAN,LULUS
+HERY KURNIAWAN,0066126376,PEMASARAN,LULUS
+LEVIAN DHINO RASHA RAMADANI,0073492801,PEMASARAN,LULUS
+LINTANG FELCILLIA,0089404100,PEMASARAN,LULUS
+M. ARIF SETIAWAN,0078268885,PEMASARAN,LULUS
+MELYANA DWI PRATIWI,0071805626,PEMASARAN,LULUS
+MUHAMAD MAFUTI RIFA'I,0087525374,PEMASARAN,LULUS
+MUHAMMAD ANDI SAPUTRA,0089239111,PEMASARAN,LULUS
+NADIA ELMADINI,0071509460,PEMASARAN,LULUS
+NAILA ANJANI,0087985710,PEMASARAN,LULUS
+NOFITA ANGGRAINI,0076223454,PEMASARAN,LULUS
+PURYADI,0079371963,PEMASARAN,LULUS
+PUTRI ALIFIA,0087424169,PEMASARAN,LULUS
+RISKA DIFRI ALFIANA,0081977252,PEMASARAN,LULUS
+TIKA ANJANI,0071967019,PEMASARAN,LULUS`;
+
+    function parseCSV(csv) {
+        const lines = csv.trim().split('\n');
+        const headers = lines[0].split(',').map(h => h.trim());
+        const result = [];
+        for (let i = 1; i < lines.length; i++) {
+            const obj = {};
+            const currentLine = lines[i].split(',');
+            for (let j = 0; j < headers.length; j++) {
+                obj[headers[j]] = currentLine[j] ? currentLine[j].trim() : '';
+            }
+            result.push(obj);
+        }
+        return result;
+    }
+    const studentsData = parseCSV(dataCSV);
+
+    // TIMER
+    const targetDate = new Date("2026-05-05T16:00:00").getTime();
+    const timerInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+        if (distance <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById("btn-masuk").disabled = false;
+            document.getElementById("btn-masuk").innerText = "MASUK KE HALAMAN PENGUMUMAN";
+            document.querySelector(".timer-container").style.display = "none";
+        } else {
+            document.getElementById("t-hari").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById("t-jam").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById("t-menit").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById("t-detik").innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }
+    }, 1000);
+
+    // SPA NAV
+    function navigasi(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    // CEK KELULUSAN & MODAL
+    const inputNisn = document.getElementById('input-nisn');
+    inputNisn.addEventListener('keypress', (e) => { if(e.key === 'Enter') cekKelulusan(); });
+
+    function cekKelulusan() {
+        const nisn = inputNisn.value.trim();
+        if (!nisn) return alert("Masukkan NISN!");
+
+        const siswa = studentsData.find(s => s.NISN === nisn);
+        const modal = document.getElementById('modal-result');
+        const badge = document.getElementById('res-status-badge');
+        const actions = document.getElementById('modal-actions');
+        
+        badge.className = "status-badge"; // Reset
+
+        if (siswa) {
+            document.getElementById('res-nama').innerText = siswa.Nama;
+            document.getElementById('res-nisn').innerText = siswa.NISN;
+            document.getElementById('res-jurusan').innerText = siswa.Jurusan;
+            
+            if (siswa.Status.toUpperCase() === "LULUS") {
+                badge.innerText = "LULUS";
+                badge.classList.add("badge-lulus");
+                document.getElementById('res-message').innerText = "Selamat! Pertahankan prestasimu di jenjang berikutnya.";
+                actions.innerHTML = `
+                    <button class="btn btn-gold" onclick="window.print()">??? Cetak SK Kelulusan</button>
+                    <button class="btn btn-outline" onclick="closeModal()">Cek Siswa Lain</button>
+                `;
+            } else {
+                badge.innerText = "TIDAK LULUS";
+                badge.classList.add("badge-gagal");
+                document.getElementById('res-message').innerText = "Jangan berkecil hati. Kegagalan adalah awal dari kesuksesan yang tertunda.";
+                actions.innerHTML = `<button class="btn btn-outline" onclick="closeModal()">Tutup</button>`;
+            }
+        } else {
+            document.getElementById('res-nama').innerText = "Data Tidak Ditemukan";
+            document.getElementById('res-nisn').innerText = nisn;
+            document.getElementById('res-jurusan').innerText = "-";
+            badge.innerText = "ERROR";
+            badge.classList.add("badge-error");
+            document.getElementById('res-message').innerText = "Pastikan NISN yang Anda masukkan sudah benar.";
+            actions.innerHTML = `<button class="btn btn-outline" onclick="closeModal()">Coba Lagi</button>`;
+        }
+
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('modal-result').classList.remove('active');
+        inputNisn.value = "";
+    }
+
+    document.getElementById('currentYear').innerText = new Date().getFullYear();
+</script>
+</body>
+</html>
